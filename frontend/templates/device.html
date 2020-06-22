@@ -1,0 +1,332 @@
+{% extends "base.html" %} 
+{% block content1 %}
+{% load static from staticfiles %}
+<script src="{% static "js/jszip.min.js" %}" type="text/javascript"></script>
+{% include 'base/dx.html' %}
+{% load mathfilters %}
+
+<style>
+    .dx-row.dx-data-row .train {
+        color: #bf4e6a;
+        font-weight: bold;
+    }
+    .dx-row.dx-data-row .status {
+        font-weight: bold;
+    }
+</style>
+
+<!--Grids here-->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Phones</h4>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="gridphones"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>
+
+<script>
+    let url = "/frontend/device/";
+    var fsData = new DevExpress.data.CustomStore({
+        key: "id",
+        load: function () {
+            return sendRequest(url, "GET");
+        },
+        insert: function(values) {
+            values["createdBy"] = '{{ user.first_name }} {{user.last_name}}';
+            values["createdOn"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+            return sendRequest(url, "POST", values );
+        },
+        remove: function(key) {
+            return sendRequest(url + key , "DELETE", key);
+        },
+        update: function(key, values) {
+            return sendRequest(url + key, "PUT", values);
+        },
+        onUpdating: function (key, values) {
+            values["lastEditBy"] = '{{ user.first_name }} {{user.last_name}}';
+            values["lastEdited"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+        },
+        onInserting: function (values) {
+            values["id"] = 0;
+            values["lastEditBy"] = '{{ user.first_name }} {{user.last_name}}';
+            values["lastedited"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+        }
+    });
+
+    $(function(){
+
+        let dataGrid = $("#gridphones").dxDataGrid({
+            key: "id",
+            height: 450,
+            dataSource: {
+            store: fsData,
+            reshapeOnPush: true
+            },
+            repaintChangesOnly: false,
+            highlightChanges: true,
+            scrolling: {
+                mode: "virtual"
+            },
+            editing: {
+            mode: "batch",
+            allowAdding: true,
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            startEditAction: "click",
+            refreshMode: 'reshape',
+            },
+            allowColumnReordering: true,
+            showBorders: true,
+            rowAlternationEnabled: true,
+            allowColumnResizing: true,
+            columnResizingMode: "nextColumn",
+            columnMinWidth: 50,
+            columnAutoWidth: true,
+            //focusedRowEnabled: true,
+            hoverStateEnabled: true,
+            columns: [
+                {
+                    dataField: "deviceID",
+                    caption: "Device ID",
+                    allowEditing: true,
+                    cssClass: "train",
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "serialNo",
+                    caption: "Serial No.",
+                    allowEditing: true,
+                    visible: true,
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "branch",
+                    caption: "Branch",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "/frontend/branchList/"
+                        }),
+                        valueExpr: "id",
+                        displayExpr: "name"
+                    },
+                },
+                {
+                    dataField: "status",
+                    caption: "Status",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: statuses,
+                        valueExpr: "id",
+                        displayExpr: "name"
+                    },
+                },
+            ],
+            summary: {
+                totalItems: [{
+                    column: "deviceID",
+                    summaryType: "count"
+                }]
+            },
+            onCellPrepared: function(e) {
+                if(e.rowType === 'data') {
+                    if(e.data.status === 0) {
+                        e.cellElement.css({ 'background-color': '#fb4c4c', 'color':'#ffffff' });
+                    }
+                    else
+                    if(e.data.status === 1) {
+                        e.cellElement.css({ 'background-color': '#a5a19d' });
+                    }
+                }
+            }
+        }).dxDataGrid("instance");
+
+    });
+
+    var resizingModes = ["nextColumn", "widget"];
+
+    $("#select-resizing").dxSelectBox({
+        items: resizingModes,
+        value: resizingModes[0],
+        width: 250,
+        onValueChanged: function(data) {
+            dataGrid.option("columnResizingMode", data.value);  
+        }
+    });
+
+    function sendRequest(url, method, data) {
+        var d = $.Deferred();
+        method = method || "GET";
+
+        //logRequest('{{ user.first_name }} {{user.last_name}}', method, url, data);
+
+        $.ajax(url, {
+            method: method || "GET",
+            data: data
+        }).done(function(result) {
+
+            d.resolve(method === "GET" ? result : result);
+        });
+        return d.promise();
+    }
+
+    var statuses = [
+        {
+            "id": true, "name": "Active"
+        }, 
+        {
+            "id": false, "name": "Inactive"
+        }, 
+    ];
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function startWebsocket(){
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var ws_path = ws_scheme + '://' + window.location.host + "/frontend/stream/";
+    //console.log("Connecting to " + ws_path);
+    //var socket = new ReconnectingWebSocket(ws_path);
+    let socket = new WebSocket(ws_path);
+
+    // Handle incoming messages
+    socket.onmessage = function (message) {
+
+        // Decode the JSON
+        //console.log("Got websocket message " + message.data);
+        var data = JSON.parse(message.data);
+
+        if(data.event = "Edited_Fleet_Status")
+        {
+            if(data.equipment !=="")
+            {
+                showAlert(data.username+' edited NCP Fleet Status for '+data.equipment+'. '+data.comments,"alert-info", false);
+                $.growl.notice({
+                    message: data.username+ ' Changed '+data.equipment+' status: '+data.comments
+                });
+            }
+            else
+            {
+                swal({
+                    title: data.username,
+                    text: 'Changed Fleet Requirements',
+                    timer: 2500,
+                    showConfirmButton: false
+		        });
+            }
+            //updateStats(data);
+            //updateGrids(data);
+
+            //swal({
+            //    title: data.username,
+            //    text: 'Changed '+data.equipment+' status: '+data.comments,
+            //    timer: 2500,
+            //    showConfirmButton: false
+		    //});
+
+        }
+
+        if (data.error) {
+                showAlert('Error: '+data.error, "alert-danger", false);
+            return;
+        }
+    };
+
+    function updateStats(data){
+
+        $('#lastedit').html('NCP Fleet Status Updated by '+data.username+' on '+ getDate(data.lastedit));
+        $('#bmu').html('Currently: '+data.bmu_total);
+        
+        $('#ct7553ser').html(data.count7553ser+' Serviceable');
+        $('#ct7553stp').html(data.count7553stp+' Unserviceable');
+        $('#ct7553exp').html(data.count7553exp+' Expected');
+        $('#ct7553req').html('<span class="text-warning">'+data.count7553req.required+' Required</span>');
+        $('#ct7553av').html('755/3 Availability <span class="float-right text-muted">' + (parseInt(data.count7553ser) - parseInt(data.count7553req.required)) + '</span>');
+        
+        $('#ct7554ser').html(data.count7554ser+' Serviceable');
+        $('#ct7554stp').html(data.count7554stp+' Unserviceable');
+        $('#ct7554exp').html(data.count7554exp+' Expected');
+        $('#ct7554req').html('<span class="text-warning">'+data.count7554req.required+' Required</span>');
+        $('#ct7554av').html('755/4 Availability <span class="float-right text-muted">' + (parseInt(data.count7554ser) - parseInt(data.count7554req.required)) + '</span>');
+
+        $('#ct7450ser').html(data.count7450ser+' Serviceable');
+        $('#ct7450stp').html(data.count7450stp+' Unserviceable');
+        $('#ct7450exp').html(data.count7450exp+' Expected');
+        $('#ct7450req').html('<span class="text-warning">'+data.count7450req.required+' Required</span>');
+        $('#ct7450av').html('745 EMU Availability <span class="float-right text-muted">' + (parseInt(data.count7450ser) - parseInt(data.count7450req.required)) + '</span>');
+
+        $('#ct7451ser').html(data.count7451ser+' Serviceable');
+        $('#ct7451stp').html(data.count7451stp+' Unserviceable');
+        $('#ct7451exp').html(data.count7451exp+' Expected');
+        $('#ct7451req').html('<span class="text-warning">'+data.count7451req.required+' Required</span>');
+        $('#ct7451av').html('745 AIR Availability <span class="float-right text-muted">' + (parseInt(data.count7451ser) - parseInt(data.count7451req.required)) + '</span>');
+
+    };
+
+    function updateGrids(data){
+        
+    };
+
+    function getDate(value){
+        if(value !=='null')
+        {
+            var dt = JSON.parse(value).substr(0,19);
+            console.log(dt);
+            return  new Date(dt); //DevExpress.localization.formatDate(dt, "yyyy-MM-ddTHH:mm:ss");
+        }
+        return "";
+    }
+
+    // Helpful debugging
+    socket.onopen = function () {
+        //console.log("Connected to fleet status socket");
+        // warning / error / notice
+        $.growl.notice({
+            message: "Connected"
+        });
+        //showAlert('Connected to fleet status notifications thread',"alert-success", false);
+    }
+    socket.onclose = function () {
+        //console.log("Disconnected from fleet status notification socket");
+        $.growl.error({
+            message: "Disconnected"
+        });
+        socket = null;
+        setTimeout(startWebsocket, 30000);
+        //showAlert('Disconnected from fleet status notifications thread',"alert-warning", false);
+    }
+    socket.onerror = function(err) {
+        console.log('Encountered error: ', err.message, 'Closing socket');
+        socket.close();
+    }
+
+    });
+</script>
+
+{% endblock  %}

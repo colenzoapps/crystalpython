@@ -1,0 +1,15 @@
+{% load crispy_forms_field %}
+
+<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+<div class="input-group date" data-target-input="nearest">
+    {% crispy_field field 'id="datepick" type="text"' %}
+    <div class="input-group-append" data-target="#datepick" data-toggle="datepicker">
+      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+    </div>
+</div>
+
+<script>
+  $(function () {
+    $('#datepick').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD/MM/YYYY' });
+  });
+</script>

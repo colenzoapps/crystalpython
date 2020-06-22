@@ -1,0 +1,207 @@
+{% extends "base.html" %} 
+
+{% block content1 %}
+{% load static from staticfiles %}
+<script src="{% static "js/jszip.min.js" %}" type="text/javascript"></script>
+
+{% include 'base/dx.html' %}
+
+<style>
+    #schedulerilam .dx-scheduler-cell-sizes-vertical {
+        height: 60px;
+    }
+    #schedulerilam .dx-scheduler-cell-sizes-horizontal {
+        width: 100px;
+    }
+    #scroll, #list {
+        position: absolute;
+        left: 5px;
+        top: 0;
+        bottom: 0;
+        width: 240px;
+    }
+    .item {
+        box-sizing: border-box;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+    }
+    #schedulerilam {
+        margin-left: 270px;
+    }
+    .dx-draggable-source {
+        opacity: 0.5;
+    }
+    .dx-draggable-dragging > * {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    .showtime-preview > div:first-child {
+        font-size: 12px;
+        white-space: normal;
+    }
+    .showtime-preview > div:not(:first-child) {
+        font-size: 11px;
+        white-space: normal;
+    }
+    .tables {
+        display: flex;
+    }
+    .column:first-child {
+        width: 50%;
+        padding-right: 15px;
+    }
+    .column:last-child {
+        width: 50%;
+        padding-left: 15px;
+    }
+    .tables {
+        display: flex;
+    }
+    .column:first-child {
+        width: 50%;
+        padding-right: 15px;
+    }
+    .column:last-child {
+        width: 50%;
+        padding-left: 15px;
+    }
+    #data-grid-demo {
+    min-height: 700px;
+    }
+
+    #gridContainer {
+        padding-top: 45px;
+    }
+
+    #gridDeleteSelected {
+        position: absolute;
+        z-index: 1;
+        right: 10px;
+        margin: 5px;
+        top: 10px;
+    }
+
+    .dx-button-text {
+        line-height: 0;
+    }
+</style>
+
+<h3>Order Statuses</h3>
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+        <div class="card-header">
+                <h4 class="card-title">Work Flow Status</h4>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                    <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                    <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                </div>
+            </div>
+        <div class="card-body">
+            <div id="scroll">
+            <div id="list"></div>
+            </div>
+            <div id="orderboard"></div>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>
+
+<script>
+
+    $(function() {
+        var statuses = ["Not Started", "Need Assistance", "In Progress", "Deferred", "Completed"];
+
+        renderKanban($("#orderboard"), statuses);
+
+        function renderKanban($container, statuses) {
+            statuses.forEach(function(status) {
+                renderList($container, status)
+            });
+
+            $container.addClass("scrollable-board").dxScrollView({
+                direction: "horizontal",
+                showScrollbar: "always"
+            });
+
+            $container.addClass("sortable-lists").dxSortable({
+                filter: ".list",
+                itemOrientation: "horizontal",
+                handle: ".list-title",
+                moveItemOnDrop: true
+            });
+        }
+
+
+        function renderList($container, status) {
+            var $list = $("<div>").addClass("list").appendTo($container);
+
+            renderListTitle($list, status);
+
+            var listTasks = tasks.filter(function(task) { return task.Task_Status === status });
+
+            renderCards($list, listTasks);
+        }
+
+        function renderListTitle($container, status) {
+            $("<div>")
+                .addClass("list-title")
+                .addClass("dx-theme-text-color")
+                .text(status)
+                .appendTo($container);
+        }
+
+        function renderCards($container, tasks) {
+            var $scroll = $("<div>").appendTo($container);
+            var $items = $("<div>").appendTo($scroll);
+
+            tasks.forEach(function(task) {
+                renderCard($items, task);
+            });
+
+            $scroll.addClass("scrollable-list").dxScrollView({
+                direction: "vertical",
+                showScrollbar: "always"
+            });
+
+            $items.addClass("sortable-cards").dxSortable({
+                group: "tasksGroup",
+                moveItemOnDrop: true
+            });
+        }
+
+        function renderCard($container, task) {
+            var $item = $("<div>")
+                .addClass("card")
+                .addClass("dx-card")
+                .addClass("dx-theme-text-color")
+                .addClass("dx-theme-background-color")
+                .appendTo($container);
+
+            var employee = employees.filter(function(employee) { return employee.ID === task.Task_Assigned_Employee_ID })[0];
+
+            $("<div>").addClass("card-priority").addClass("priority-" + task.Task_Priority).appendTo($item);
+            $("<div>").addClass("card-subject").text(task.Task_Subject).appendTo($item);
+            $("<div>").addClass("card-assignee").text(employee.Name).appendTo($item);
+        }
+    });
+</script>
+
+{% endblock %}

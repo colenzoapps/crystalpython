@@ -1,0 +1,133 @@
+<!doctype html>
+{% load static from staticfiles %}
+{% load crispy_forms_tags %}
+<html lang="en" dir="ltr">
+	<head>
+		<!-- Meta data -->
+		<meta charset="UTF-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+		<meta content="CAM – Asset Management System" name="description">
+		<meta content="CAM AI Systems Ltd" name="author">
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		{% include 'base/dashcss.html' %}
+
+		{% comment %} <link href="https://allfont.net/allfont.css?fonts=dodger" rel="stylesheet" type="text/css" /> {% endcomment %}
+	</head>
+<body class="app h-100vh">
+<style>
+.cover {
+   object-fit: cover;
+   height: 100%;
+   /*height: 300px;  optional, you can remove it, but in my case it was good */
+}
+
+img {
+    vertical-align: middle;
+    width:35px;
+    height:35px;
+}
+</style>
+	<!-- Loader -->
+	{% comment %} <div id="loading">
+		<img src="{% static "assets/images/other/loader.svg" %}" class="loader-img" alt="Loader">
+	</div> {% endcomment %}
+
+	<!-- Page opened -->
+	<div class="page">
+		<div class="">
+			<div class="col col-login mx-auto">
+				<div class="text-center">
+					<h2 style="font-family: 'Dodger Shadow'; font-size: 48px; text-shadow: 4px 4px 4px #aaa;">Crystal P</h2>
+					{% comment %} <img src="{% static "assets/images/brand/logo.png" %}" class="header-brand-img desktop-logo h-100 mb-5" alt="CAM logo"> {% endcomment %}
+					{% comment %} <img src="{% static "assets/images/brand/logo1.png" %}" class="header-brand-img dark-theme h-100 mb-5 " alt="CAM logo"> {% endcomment %}
+				</div>
+			</div>
+			<!-- container opened -->
+			<div class="container">
+				<div class="row">
+					<div class="col-xl-9 justify-content-center mx-auto text-center">
+						<div class="card">
+							<div class="row">
+								{% comment %} <div class="col-md-12 col-lg-7 pr-0 d-none d-lg-block">
+									<img src="{% static "images/dct.png" %}" alt="img" class="br-tl-2 br-bl-2">
+								</div> {% endcomment %}
+								<div class="col-md-12 col-lg-12 pl-0 ">
+									<div class="card-body p-6 about-con pabout">
+										<div class="card-title text-center  mb-4">Registration Form</div>
+										<form method="post">
+											<div class="form-group">
+											{% csrf_token %}
+											{% comment %} {{ form | crispy }} {% endcomment %}
+											<div class="row">
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.email|as_crispy_field }}
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.phone|as_crispy_field }}
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.first_name|as_crispy_field }}
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.last_name|as_crispy_field }}
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.password1|as_crispy_field }}
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-12">
+													<div class="form-group">
+														{{ form.password2|as_crispy_field }}
+													</div>
+												</div>
+											</div>
+
+											</div>
+											{% comment %} <div class="form-group">
+												<label class="custom-control custom-checkbox">
+													<a href="{% url 'home' %}" class="float-right small text-info" >Login</a>
+												</label>
+											</div> {% endcomment %}
+											 <br/>
+											{% if messages %}
+											{% for message in messages %}
+											<div>
+												<strong>{{message|safe}}</strong>
+											</div>
+											{% endfor %}
+											{% endif %}
+
+											<div class="form-footer mt-1">
+											<button class="btn btn-success btn-block" type="submit">Submit</button>
+										</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- container closed -->
+		</div>
+	</div>
+	<!-- Page closed -->
+	{% include 'base/jsx.html' %}
+</body>
+</html>

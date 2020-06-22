@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error{% endblock %}
+{% block header_text %}Server Error{% endblock %}
+
+{% block content %}
+{% load static from staticfiles %}
+<div class="page">
+        <!-- PAGE-CONTENT OPEN -->
+        <div class="page-content error-page">
+            <div class="container text-center">
+                <img src="{% static "assets/images/svg/error.svg" %}" alt="error" class="w-50 floating">
+                <h1 class="h2 mt-4 mb-5">Oops! Page Not Found</h1>
+                <a class="btn btn-outline-primary" href="{% url 'home' %}">
+                    Back To Home
+                </a>
+            </div>
+        </div>
+        <!-- PAGE-CONTENT OPEN CLOSED -->
+    </div>
+{% endblock %}

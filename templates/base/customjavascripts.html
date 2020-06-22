@@ -1,0 +1,61 @@
+<script>
+  function showAlert(message, type, stay) {
+    $('#notify').html('<div class="alert ' + type + ' alert-dismissible fade show" role="alert"><strong>Notification: </strong> '+message+' <button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+      '<span aria-hidden="true">&times;</span></button></div>');
+        if(stay)
+          {
+            $('#notify').show();
+          }else
+          {
+              $("#notify").fadeTo(10000, 500).slideUp(500, function(){
+                $("#notify").slideUp(500);
+              });
+          }
+  };
+
+  function showAlert1(message, type, stay) {
+    $('#update').html('<div class="alert ' + type + ' alert-dismissible fade show" role="alert"><strong>Notification: </strong> '+message+' <button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+      '<span aria-hidden="true">&times;</span></button></div>');
+        if(stay)
+          {
+              $('#update').show();
+          }else
+          {
+              $("#update").fadeTo(10000, 500).slideUp(500, function(){
+                  $("#update").slideUp(500);
+              });
+          }
+  };
+
+  function worker(){
+    $.ajax({
+      method: "GET",
+      url: '/units/lastupdated/'+0,
+      success: function(update_data) {
+        var current_datetime = new Date(update_data.liveInfor).toLocaleString();
+        var geniusImport = new Date(update_data.GeniusImport).toLocaleString();
+        var ncgeniusImport = new Date(update_data.NCGeniusImport).toLocaleString();
+        showAlert1('Last Infor update: '+current_datetime+' | Last ILF Miles: '+ update_data.GeniusDate +' imported @ ' + geniusImport +' | Last NC Miles '+ update_data.NCGeniusDate +' imported @ ' + ncgeniusImport, "alert-light", false);
+        //console.log("Refresh checked: " +current_datetime)
+      },
+      //complete: function() {
+      //  setTimeout(worker, 1000 * 10);
+      //}
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    //worker();
+    //setTimeout(worker, 1000 * 1800);
+  });
+
+  function goDark() {
+
+    var element = document.body;
+    element.classList.toggle("dark-mode");
+    DevExpress.ui.themes.current("generic.dark");
+
+  };
+
+  
+</script>

@@ -1,0 +1,830 @@
+{% extends "base.html" %} 
+{% block content1 %}
+{% load static from staticfiles %}
+<script src="{% static "js/jszip.min.js" %}" type="text/javascript"></script>
+{% include 'base/dx.html' %}
+{% load mathfilters %}
+
+<style>
+    .dx-row.dx-data-row .train {
+        color: #bf4e6a;
+        font-weight: bold;
+    }
+    .dx-row.dx-data-row .status {
+        font-weight: bold;
+    }
+</style>
+
+<!-- Page-header opened -->
+<div class="page-header" style="margin:1px">
+    <div class="page-leftheader">
+        <h4 class="page-title mb-0">Hi, {{user.first_name}} welcome back!</h4>
+    </div>
+    <div class="page-rightheader">
+        <div class="d-flex mt-4 mt-xl-0 mt-lg-0">
+            {% comment %} <div class="d-flex justify-content-center mr-5">
+                <div class="">
+                    <span class="d-block">
+                        <span class="text-muted fs-13">LIVE AVAILABILITY</span>
+                    </span>
+                    <span id="bmu" class="h4 font-weight-semibold">
+                        Currently: {{bmu_total}}
+                    </span>
+                </div>
+                <div class="ml-3 mt-2">
+                    <span class="sparkline_bar"></span>
+                </div>
+            </div> {% endcomment %}
+            <button id="print" type="button" onclick="" class="btn btn-info btn-icon-text mb-2 mb-md-0"> 
+                <i class="fe fe-download-cloud "></i>
+                View Report
+            </button>
+        </div>
+    </div>
+</div>
+<!-- Page-header closed -->
+
+<!--Stats-->
+<div class="row">
+    <div class="col-xl-3 col-md-12 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex">
+                    <div>
+                        <p class="mb-1"><img src="{% static "assets/images/crypto-currencies/regular/Dash.svg" %}" class="w-5 h-5 mr-1" alt="img">SESSIONS</p>
+                    </div>
+                    <div class="ml-auto">
+                        <p class="mb-1 fs-15 text-success"><i class="mr-1"></i>Active Shifts Today: 2</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-1 mb-1">
+                    <div>
+                        <p id="ct7553stp" class="mb-0 text-danger">94 Total Devices</p>
+                        <h3 id="ct7553ser" class="mb-1">2 Active</h3>
+                    </div>
+                    <div class="ml-auto text-right">
+                        <p id="ct7553exp" class=" mb-0 text-muted">Expected</p>
+                        <p id="ct7553req" class=" mb-0 text-muted"><span class="text-warning">Required</span></p>
+                    </div>
+                </div>
+                <div class="progress h-1 mt-3 mb-2">
+                    <div class="progress-bar bg-primary w-100 " role="progressbar"></div>
+                </div>
+                <small id="ct7553av" class="mb-0 text-muted">Staff Availability<span class="float-right text-muted">0</span></small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-12 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex">
+                    <div>
+                        <p class="mb-1"><img src="{% static "assets/images/crypto-currencies/regular/Dash.svg" %}" class="w-5 h-5 mr-1" alt="img">HOURS</p>
+                    </div>
+                    <div class="ml-auto">
+                        <p class="mb-1 fs-15 text-success"><i class="mr-1"></i></p>
+                    </div>
+                </div>
+                <div class="d-flex mt-1 mb-1">
+                    <div>
+                        <p id="ct7554stp" class="mb-0 text-danger">Yesterday: 54hrs</p>
+                        <h3 id="ct7554ser" class="mb-1">Today 44hrs</h3>
+                    </div>
+                    <div class="ml-auto text-right">
+                        <p id="ct7554exp" class=" mb-0 text-muted">Tomorrow 54hrs</p>
+                        <p id="ct7554req" class=" mb-0 text-muted"><span class="text-warning">2x Staff Required</span></p>
+                    </div>
+                </div>
+                <div class="progress h-1 mt-3 mb-2">
+                    <div class="progress-bar bg-secondary w-100 " role="progressbar"></div>
+                </div>
+                <small id="ct7554av" class="mb-0 text-muted">Last Month<span class="float-right text-muted">2000hrs</span></small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-12 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex">
+                    <div>
+                        <p class="mb-1"><img src="{% static "assets/images/crypto-currencies/regular/Dash.svg" %}" class="w-5 h-5 mr-1" alt="img">CLOCK-IN/OUTS</p>
+                    </div>
+                    <div class="ml-auto">
+                        <p class="mb-1 fs-15 text-success"><i class="mr-1"></i>Total for today 21</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-1 mb-1">
+                    <div>
+                        <p id="ct7450stp" class="mb-0 text-danger">Yesterday 40</p>
+                        <h3 id="ct7450ser" class="mb-1">22 Visits Today</h3>
+                    </div>
+                    <div class="ml-auto text-right">
+                        <p id="ct7450exp" class=" mb-0 text-muted"></p>
+                        <p id="ct7450req" class=" mb-0 text-muted"><span class="text-warning"></span></p>
+                    </div>
+                </div>
+                <div class="progress h-1 mt-3 mb-2">
+                    <div class="progress-bar bg-warning w-100 " role="progressbar"></div>
+                </div>
+                <small id="ct7450av" class="mb-0 text-muted">Last Month<span class="float-right text-muted">40</span></small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-12 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex">
+                    <div>
+                        <p class="mb-1"><img src="{% static "assets/images/crypto-currencies/regular/Dash.svg" %}" class="w-5 h-5 mr-1" alt="img">CLOSED SHIFTS</p>
+                    </div>
+                    <div class="ml-auto">
+                        <p class="mb-1 fs-15 text-success"><i class="mr-1"></i></p>
+                    </div>
+                </div>
+                <div class="d-flex mt-1 mb-1">
+                    <div>
+                        <p id="ct7451stp" class="mb-0 text-danger">4 Yesterday</p>
+                        <h3 id="ct7451ser" class="mb-1">2 Closed</h3>
+                    </div>
+                    <div class="ml-auto text-right">
+                        <p id="ct7451exp" class=" mb-0 text-muted"></p>
+                        <p id="ct7451req" class=" mb-0 text-muted"><span class="text-warning"></span></p>
+                    </div>
+                </div>
+                <div class="progress h-1 mt-3 mb-2">
+                    <div class="progress-bar bg-info w-100 " role="progressbar"></div>
+                </div>
+                <small id="ct7451av" class="mb-0 text-muted">Last Month<span class="float-right text-muted">400</span></small>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- row closed -->
+
+<!--Grids here-->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wideget-user-tab wideget-user-tab3 border-bottom">
+            <div class="tab-menu-heading">
+                <div class="tabs-menu1">
+                    <ul class="nav">
+                        <li class=""><a href="#tab-1" class="h5 active" data-toggle="tab">Clients</a></li>
+                        <li><a href="#tab-2" data-toggle="tab" class="h5">Client Inventory</a></li>
+                        <li><a href="#tab-3" data-toggle="tab" class="h5">Manage Client Folders</a></li>
+                        <li><a href="#tab-4" data-toggle="tab" class="h5">Maps</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white widget-user mb-0">
+            <div class="card-body">
+                <div class="border-0">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-1">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                    <h3 class="card-title">Clients</h3>
+                                    <div class="card-options ">
+                                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                        <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                        <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                    </div>
+                                    </div>
+                                    <div class="card-body">
+                                     <div id="gvClients"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-2">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Manage Client Folders</h4>
+                                            <div class="card-options ">
+                                                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                                <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                                <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Maps</h4>
+                                            <div class="card-options ">
+                                                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                                <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                                <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-3">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Manage Client Folders</h4>
+                                            <div class="card-options ">
+                                                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                                <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                                <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                         
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-4">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Maps</h4>
+                                            <div class="card-options ">
+                                                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                                <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
+                                                <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+</script>
+
+<script>
+        let url = "/frontend/clientList/";
+
+        var clientData = new DevExpress.data.CustomStore({
+            key: "id",
+            load: function () {
+                return sendRequest(url, "GET");
+            },
+            insert: function(values) {
+                return sendRequest(url, "POST", values );
+            },
+            remove: function(key) {
+                return sendRequest(url + key , "DELETE", key);
+            },
+            update: function(key, values) {
+                return sendRequest(url + key + "/", "PUT", values);
+            },
+            onUpdating: function (key, values) {
+                values["lastEditBy"] = '{{ user.first_name }} {{user.last_name}}';
+                values["lastEditOn"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+            },
+            onInserting: function (values) {
+                values["id"] = 0;
+                values["lastEditBy"] = '{{ user.first_name }} {{user.last_name}}';
+                values["createdBy"] = '{{ user.first_name }} {{user.last_name}}';
+                values["createdOn"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+                values["lastEditOn"] = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+            }
+        });
+
+    $(function(){
+
+        let dataGrid = $("#gvClients").dxDataGrid({
+            key: "id",
+            height: 1030,
+            dataSource: {
+            store: clientData,
+            reshapeOnPush: true
+            },
+            repaintChangesOnly: false,
+            highlightChanges: true,
+            scrolling: {
+                mode: "virtual"
+            },
+            editing: {
+            mode: "form",
+            allowAdding: true,
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            startEditAction: "click",
+            refreshMode: 'reshape',
+            },
+            allowColumnReordering: true,
+            showBorders: true,
+            rowAlternationEnabled: true,
+            allowColumnResizing: true,
+            columnResizingMode: "nextColumn",
+            columnMinWidth: 50,
+            columnAutoWidth: true,
+            hoverStateEnabled: true,
+            //dateSerializationFormat: "yyyy-MM-ddTHH:mm:ssZ",
+            //dateSerializationFormat: "yyyy-MM-dd",
+            columns: [
+                {
+                    dataField: "full_Name",
+                    caption: "Full Name",
+                    allowEditing: true,
+                    cssClass: "train",
+                },
+                {
+                    dataField: "first_Name",
+                    caption: "First Name",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "last_Name",
+                    caption: "Last Name",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "other_Name",
+                    caption: "Other Name",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "referral_Date",
+                    dataType: "datetime",
+                    format: "dd-MM-yyyy HH:mm",
+                    caption: "Referral",
+                    allowEditing: true
+                },
+                {
+                    dataField: "commencement",
+                    dataType: "datetime",
+                    format: "dd-MM-yyyy HH:mm",
+                    caption: "Commencement",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "DOB",
+                    dataType: "date",
+                    format: "dd-MM-yyyy",
+                    caption: "DOB",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "gender",
+                    caption: "Gender",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: gender,
+                        valueExpr: "id",
+                        displayExpr: "text"
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "nationality",
+                    caption: "Nationality",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "phone",
+                    caption: "Phone",
+                    allowEditing: true,
+                },
+                {
+                    dataField: "address1",
+                    caption: "Address1",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "address2",
+                    caption: "Address2",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "town",
+                    caption: "Town",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "city",
+                    caption: "City",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "county",
+                    caption: "County",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "postCode",
+                    caption: "Post Code",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "gp",
+                    caption: "GP",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "gp_Phone",
+                    caption: "GP Phone",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "district_Nurse",
+                    caption: "District Nurse",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "DN_Phone",
+                    caption: "DN Phone",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "carePlan",
+                    caption: "Care Plan",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "/frontend/careplanList/?format=json"
+                        }),
+                        valueExpr: "id",
+                        displayExpr: "text"
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "careProvider",
+                    caption: "Care Provider",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "/frontend/careproviderList/?format=json"
+                        }),
+                        valueExpr: "id",
+                        displayExpr: "text"
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "branch",
+                    caption: "Branch",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "/frontend/branchList/?format=json"
+                        }),
+                        valueExpr: "id",
+                        displayExpr: "name"
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "frequency",
+                    caption: "Frequency",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "next_of_Kin",
+                    caption: "Next of Kin",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "next_of_Kin_Phone",
+                    caption: "NoK Phone",
+                    allowEditing: true,
+                    visible: true,
+                },
+                {
+                    dataField: "NOK_Relationship",
+                    caption: "NoK Relationship",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "KSC",
+                    caption: "KSC",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "discharge_Date",
+                    dataType: "datetime",
+                    format: "dd-MM-yyyy HH:mm",
+                    caption: "Discharge Date",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "nhs_no ",
+                    caption: "NHS_no ",
+                    allowEditing: true,
+                    visible: false,
+                },
+                {
+                    dataField: "status",
+                    caption: "Status",
+                    sortOrder: "asc",
+                    allowEditing: true,
+                    lookup: {
+                        dataSource: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "/frontend/statusList/?format=json"
+                        }),
+                        valueExpr: "id",
+                        displayExpr: "text"
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "notes",
+                    caption: "Notes",
+                    allowEditing: true,
+                    visible: false,
+                    formItem: {
+                    colSpan: 2,
+                    editorType: "dxTextArea",
+                    editorOptions: {
+                        height: 100
+                    }
+                    }
+                },
+            ],
+            summary: {
+                totalItems: [{
+                    column: "first_Name",
+                    summaryType: "count"
+                }]
+            },
+            onCellPrepared: function(e) {
+                if(e.rowType === 'data') {
+                    if(e.data.status === 1) {
+                        e.cellElement.css({ 'background-color': '#fb4c4c', 'color':'#ffffff' });
+                    }
+                    else
+                    if(e.data.status === 2) {
+                        e.cellElement.css({ 'background-color': '#a5a19d' });
+                    }
+                    else
+                    if(e.data.status === 3) {
+                        e.cellElement.css({ 'background-color': '#abdb57' });
+                    }
+                    else
+                    if(e.data.status === 4) {
+                        e.cellElement.css({ 'background-color': '#d2ac37' });
+                    }
+                }
+            }
+        }).dxDataGrid("instance");
+
+    });
+
+
+    var resizingModes = ["nextColumn", "widget"];
+
+    $("#select-resizing").dxSelectBox({
+        items: resizingModes,
+        value: resizingModes[0],
+        width: 250,
+        onValueChanged: function(data) {
+            dataGrid.option("columnResizingMode", data.value);  
+        }
+    });
+
+    function sendRequest(url, method, data) {
+        var d = $.Deferred();
+        method = method || "GET";
+
+        //logRequest('{{ user.first_name }} {{user.last_name}}', method, url, data);
+
+        $.ajax(url, {
+            method: method || "GET",
+            data: data
+        }).done(function(result) {
+
+            d.resolve(method === "GET" ? result : result);
+        });
+        return d.promise();
+    }
+
+    function logRequest(user, method, url, data) {
+        var args = Object.keys(data || {}).map(function(key) {
+            return key + "=" + data[key];
+        }).join(" ");
+
+        var logList = $("#requests ul"),
+            datetime = DevExpress.localization.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"),
+            newItem = $("<li>").text([datetime,user, method, url.slice(URL.length), args].join(" "));
+        
+        logList.prepend(newItem);
+        //saveAudit(method, url.slice(URL.length) + args);
+    }
+
+    let audUrl = '/api/auditList/';
+    function saveAudit(method, url){
+        values = {};
+        values["id"] = 0;
+        values["page"] = "Client Page";
+        values["user"]= '{{ user.first_name }} {{user.last_name}}';
+        values["equipment"]= '';
+        values["action"]= method;
+        values["description"]= url;
+
+        $.ajax({
+            contentType: "application/json",
+            url: audUrl,
+            method: "POST",
+            data: JSON.stringify(values)
+        });
+    }
+
+    var gender = [
+        {
+            "id": 1, "text": "Male"
+        }, 
+        {
+            "id": 2, "text": "Female"
+        }, 
+        {
+            "id": 3, "text": "Other"
+        }, 
+    ];
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function startWebsocket(){
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var ws_path = ws_scheme + '://' + window.location.host + "/frontend/stream/";
+    //console.log("Connecting to " + ws_path);
+    //var socket = new ReconnectingWebSocket(ws_path);
+    let socket = new WebSocket(ws_path);
+
+    // Handle incoming messages
+    socket.onmessage = function (message) {
+
+        // Decode the JSON
+        //console.log("Got websocket message " + message.data);
+        var data = JSON.parse(message.data);
+
+        if(data.event = "Edited_Fleet_Status")
+        {
+            if(data.equipment !=="")
+            {
+                showAlert(data.username+' edited NCP Fleet Status for '+data.equipment+'. '+data.comments,"alert-info", false);
+                $.growl.notice({
+                    message: data.username+ ' Changed '+data.equipment+' status: '+data.comments
+                });
+            }
+            else
+            {
+                swal({
+                    title: data.username,
+                    text: 'Changed Fleet Requirements',
+                    timer: 2500,
+                    showConfirmButton: false
+		        });
+            }
+            //updateStats(data);
+            //updateGrids(data);
+
+            //swal({
+            //    title: data.username,
+            //    text: 'Changed '+data.equipment+' status: '+data.comments,
+            //    timer: 2500,
+            //    showConfirmButton: false
+		    //});
+
+        }
+
+        if (data.error) {
+                showAlert('Error: '+data.error, "alert-danger", false);
+            return;
+        }
+    };
+
+    function updateStats(data){
+
+        $('#lastedit').html('NCP Fleet Status Updated by '+data.username+' on '+ getDate(data.lastedit));
+        $('#bmu').html('Currently: '+data.bmu_total);
+        
+        $('#ct7553ser').html(data.count7553ser+' Serviceable');
+        $('#ct7553stp').html(data.count7553stp+' Unserviceable');
+        $('#ct7553exp').html(data.count7553exp+' Expected');
+        $('#ct7553req').html('<span class="text-warning">'+data.count7553req.required+' Required</span>');
+        $('#ct7553av').html('755/3 Availability <span class="float-right text-muted">' + (parseInt(data.count7553ser) - parseInt(data.count7553req.required)) + '</span>');
+        
+        $('#ct7554ser').html(data.count7554ser+' Serviceable');
+        $('#ct7554stp').html(data.count7554stp+' Unserviceable');
+        $('#ct7554exp').html(data.count7554exp+' Expected');
+        $('#ct7554req').html('<span class="text-warning">'+data.count7554req.required+' Required</span>');
+        $('#ct7554av').html('755/4 Availability <span class="float-right text-muted">' + (parseInt(data.count7554ser) - parseInt(data.count7554req.required)) + '</span>');
+
+        $('#ct7450ser').html(data.count7450ser+' Serviceable');
+        $('#ct7450stp').html(data.count7450stp+' Unserviceable');
+        $('#ct7450exp').html(data.count7450exp+' Expected');
+        $('#ct7450req').html('<span class="text-warning">'+data.count7450req.required+' Required</span>');
+        $('#ct7450av').html('745 EMU Availability <span class="float-right text-muted">' + (parseInt(data.count7450ser) - parseInt(data.count7450req.required)) + '</span>');
+
+        $('#ct7451ser').html(data.count7451ser+' Serviceable');
+        $('#ct7451stp').html(data.count7451stp+' Unserviceable');
+        $('#ct7451exp').html(data.count7451exp+' Expected');
+        $('#ct7451req').html('<span class="text-warning">'+data.count7451req.required+' Required</span>');
+        $('#ct7451av').html('745 AIR Availability <span class="float-right text-muted">' + (parseInt(data.count7451ser) - parseInt(data.count7451req.required)) + '</span>');
+
+    };
+
+    function updateGrids(data){
+        
+    };
+
+    function getDate(value){
+        if(value !=='null')
+        {
+            var dt = JSON.parse(value).substr(0,19);
+            console.log(dt);
+            return  new Date(dt); //DevExpress.localization.formatDate(dt, "yyyy-MM-ddTHH:mm:ss");
+        }
+        return "";
+    }
+
+    // Helpful debugging
+    socket.onopen = function () {
+        //console.log("Connected to fleet status socket");
+        // warning / error / notice
+        $.growl.notice({
+            message: "Connected"
+        });
+        //showAlert('Connected to fleet status notifications thread',"alert-success", false);
+    }
+    socket.onclose = function () {
+        //console.log("Disconnected from fleet status notification socket");
+        $.growl.error({
+            message: "Disconnected"
+        });
+        socket = null;
+        setTimeout(startWebsocket, 30000);
+        //showAlert('Disconnected from fleet status notifications thread',"alert-warning", false);
+    }
+    socket.onerror = function(err) {
+        console.log('Encountered error: ', err.message, 'Closing socket');
+        socket.close();
+    }
+
+    });
+</script>
+
+{% endblock  %}
